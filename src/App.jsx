@@ -25,18 +25,25 @@ export default function App() {
     fetchExpenses();
   }, []);
 
-  // --- 2. ADD DATA TO SUPABASE ---
-  const handleAdd = async (payload) => {
-    const { error } = await supabase
-      .from('Sterling_Spend')
-      .insert([payload]);
+ const handleAdd = async (payload) => {
+  const { error } = await supabase
+    .from('Sterling_Spend')
+    .insert([
+      { 
+        label: payload.label, 
+        value: payload.value, 
+        category: payload.category, 
+        split: payload.split, // Make sure this matches your column name!
+        date: payload.date || new Date().toISOString()
+      }
+    ]);
 
-    if (error) {
-      console.error("Error adding expense:", error.message);
-    } else {
-      fetchExpenses(); // Refresh the list
-    }
-  };
+  if (error) {
+    console.error("Error adding expense:", error.message);
+  } else {
+    fetchExpenses();
+  }
+};
 
   // --- 3. DELETE DATA FROM SUPABASE ---
   const handleDelete = async (id) => {
